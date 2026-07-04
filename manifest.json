@@ -9,7 +9,8 @@
   "features": [
     { "name": "system.prompt" },
     { "name": "system.router" },
-    { "name": "system.app" }
+    { "name": "system.app" },
+    { "name": "system.storage" }
   ],
   "config": {
     "logLevel": "log",
@@ -28,6 +29,9 @@
         "component": "index"
       },
       "pages/inequality": {
+        "component": "index"
+      },
+      "pages/converter": {
         "component": "index"
       }
     }

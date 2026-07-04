@@ -12,6 +12,9 @@
       <div class="menu-item" onclick="go('/pages/inequality')">
         <text class="menu-text">解不等式</text>
       </div>
+      <div class="menu-item" onclick="go('/pages/converter')">
+        <text class="menu-text">单位换算</text>
+      </div>
     </div>
 
     <image class="info-btn" src="/common/icon/info.png" onclick="openAbout()"></image>
@@ -69,25 +72,25 @@
 }
 
 .title {
-  font-size: 30px;
+  font-size: 24px;
   font-weight: 700;
   color: #FFFFFF;
-  margin-bottom: 32px;
+  margin-bottom: 18px;
 }
 
 .menu-item {
-  width: 184px;
-  height: 76px;
+  width: 180px;
+  height: 58px;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   background-color: #262626;
-  border-radius: 38px;
-  margin-bottom: 18px;
+  border-radius: 29px;
+  margin-bottom: 10px;
 }
 
 .menu-text {
-  font-size: 23px;
+  font-size: 18px;
   font-weight: 600;
   color: #FFFFFF;
 }

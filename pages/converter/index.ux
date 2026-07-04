@@ -1,0 +1,499 @@
+<template>
+  <div class="container" onswipe="blockSwipe">
+    <text class="time">{{time}}</text>
+    <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
+
+    <div class="type-pill" onclick="openTypeList()">
+      <text class="type-pill-text">{{typeName}}</text>
+    </div>
+
+    <div class="row">
+      <div class="value-box">
+        <text class="value-text">{{input == '' ? '0' : input}}</text>
+      </div>
+      <div class="unit-pill" onclick="openUnit1List()">
+        <text class="unit-pill-text">{{unit1Short}}</text>
+      </div>
+    </div>
+
+    <div class="swap-row">
+      <image class="swap-btn" src="/common/icon/change.png" onclick="swapUnits()"></image>
+    </div>
+
+    <div class="row">
+      <div class="value-box value-box-output">
+        <text class="value-text">{{output == '' ? '0' : output}}</text>
+      </div>
+      <div class="unit-pill unit-pill-output" onclick="openUnit2List()">
+        <text class="unit-pill-text">{{unit2Short}}</text>
+      </div>
+    </div>
+
+    <div class="keypad">
+      <div class="krow">
+        <div class="kbtn kbtn-func" onclick="clearInput()"><text class="kbtn-text">C</text></div>
+        <div class="kbtn kbtn-func" onclick="backspaceInput()"><image class="kbtn-icon" src="/common/icon/del.png"></image></div>
+        <div class="kbtn kbtn-func" if="{{showNegative}}" onclick="toggleSign()"><text class="kbtn-text-small">+/-</text></div>
+        <div class="kbtn-spacer" if="{{!showNegative}}"></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressDigit('7')"><text class="kbtn-text">7</text></div>
+        <div class="kbtn" onclick="pressDigit('8')"><text class="kbtn-text">8</text></div>
+        <div class="kbtn" onclick="pressDigit('9')"><text class="kbtn-text">9</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressDigit('4')"><text class="kbtn-text">4</text></div>
+        <div class="kbtn" onclick="pressDigit('5')"><text class="kbtn-text">5</text></div>
+        <div class="kbtn" onclick="pressDigit('6')"><text class="kbtn-text">6</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressDigit('1')"><text class="kbtn-text">1</text></div>
+        <div class="kbtn" onclick="pressDigit('2')"><text class="kbtn-text">2</text></div>
+        <div class="kbtn" onclick="pressDigit('3')"><text class="kbtn-text">3</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressDigit('0')"><text class="kbtn-text">0</text></div>
+        <div class="kbtn" onclick="pressDot()"><text class="kbtn-text">.</text></div>
+        <div class="kbtn-spacer"></div>
+      </div>
+    </div>
+
+    <div if="{{showList}}" class="list-overlay">
+      <text class="list-title">{{listTitle}}</text>
+      <image class="list-close" src="/common/icon/back.png" onclick="closeList()"></image>
+      <list class="list" bounces="true">
+        <list-item for="{{listItems}}" type="convitem" onclick="chooseItem($idx)" class="list-item">
+          <text class="list-item-name">{{$item.name}}</text>
+          <text class="list-item-short">{{$item.shortname}}</text>
+          <image if="{{$item.selected}}" class="list-item-check" src="/common/icon/true.png"></image>
+        </list-item>
+      </list>
+    </div>
+  </div>
+</template>
+
+<style>
+.container {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  background-color: #000000;
+  position: relative;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.time {
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 2px;
+}
+
+.back-btn {
+  width: 64px;
+  height: 45px;
+  margin-bottom: 4px;
+}
+
+.type-pill {
+  height: 28px;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-radius: 14px;
+  background-color: #262626;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.type-pill-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.row {
+  width: 168px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.value-box {
+  flex: 1;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #262626;
+  justify-content: center;
+  padding-left: 14px;
+  padding-right: 8px;
+  margin-right: 6px;
+}
+
+.value-box-output {
+  background-color: #1c1c1e;
+}
+
+.value-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: left;
+}
+
+.unit-pill {
+  width: 56px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #0a84ff;
+  justify-content: center;
+  align-items: center;
+}
+
+.unit-pill-output {
+  background-color: #34495e;
+}
+
+.unit-pill-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.swap-row {
+  width: 168px;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: 4px;
+}
+
+.swap-btn {
+  width: 46px;
+  height: 32px;
+  margin-right: 5px;
+}
+
+.keypad {
+  width: 168px;
+  flex-direction: column;
+  margin-top: 6px;
+}
+
+.krow {
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.kbtn {
+  flex: 1;
+  height: 32px;
+  margin-right: 6px;
+  border-radius: 16px;
+  background-color: #262626;
+  justify-content: center;
+  align-items: center;
+}
+
+.kbtn-spacer {
+  flex: 1;
+  height: 32px;
+  opacity: 0;
+}
+
+.kbtn-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.kbtn-text-small {
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.kbtn-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.kbtn-func {
+  background-color: #FF9500;
+}
+
+.list-overlay {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 192px;
+  height: 490px;
+  background-color: #000000;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 12px;
+}
+
+.list-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 8px;
+}
+
+.list-close {
+  position: absolute;
+  left: 64px;
+  top: 8px;
+  width: 64px;
+  height: 45px;
+}
+
+.list {
+  width: 176px;
+  height: 400px;
+  margin-top: 45px;
+}
+
+.list-item {
+  flex-direction: row;
+  align-items: center;
+  height: 46px;
+  padding-left: 16px;
+  background-color: #262626;
+  border-radius: 23px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.list-item-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-right: 8px;
+}
+
+.list-item-short {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.list-item-check {
+  position: absolute;
+  right: 16px;
+  top: 13px;
+  width: 20px;
+  height: 20px;
+}
+</style>
+
+<script>
+import router from '@system.router'
+import storage from '@system.storage'
+import { TYPES } from '../../common/js/units'
+
+export default {
+  data: {
+    time: '',
+    typeName: '',
+    unit1Short: '',
+    unit2Short: '',
+    showNegative: false,
+    input: '',
+    output: '',
+    showList: false,
+    listTitle: '',
+    listItems: []
+  },
+
+  updateTime() {
+    var date = new Date()
+    var hour = String(date.getHours()).padStart(2, '0')
+    var minute = String(date.getMinutes()).padStart(2, '0')
+    this.time = hour + ':' + minute
+  },
+
+  onInit() {
+    this.updateTime()
+    this.timer = setInterval(() => {
+      this.updateTime()
+    }, 60000)
+
+    this.typeIndex = 0
+    this.unit1Index = 0
+    this.unit2Index = 1
+    this.listMode = 'type'
+
+    var self = this
+    storage.get({
+      key: 'baiyan_converter_state',
+      success: function (data) {
+        if (data) {
+          var saved = JSON.parse(data)
+          self.typeIndex = saved.typeIndex || 0
+          self.unit1Index = saved.unit1Index || 0
+          self.unit2Index = saved.unit2Index || 1
+        }
+        self.syncDisplay()
+      },
+      fail: function () {
+        self.syncDisplay()
+      }
+    })
+  },
+
+  onShow() {
+    this.updateTime()
+  },
+
+  onDestroy() {
+    clearInterval(this.timer)
+  },
+
+  blockSwipe() {
+    // 攔截滑動手勢
+  },
+
+  goBack() {
+    if (this.showList) {
+      this.showList = false
+    } else {
+      router.back()
+    }
+  },
+
+  saveState() {
+    storage.set({
+      key: 'baiyan_converter_state',
+      value: JSON.stringify({
+        typeIndex: this.typeIndex,
+        unit1Index: this.unit1Index,
+        unit2Index: this.unit2Index
+      })
+    })
+  },
+
+  syncDisplay() {
+    var type = TYPES[this.typeIndex]
+    this.typeName = type.name
+    this.showNegative = type.negative
+    this.unit1Short = type.list[this.unit1Index].shortname
+    this.unit2Short = type.list[this.unit2Index].shortname
+    this.computeOutput()
+  },
+
+  computeOutput() {
+    if (this.input === '' || this.input === '-') {
+      this.output = ''
+      return
+    }
+    var type = TYPES[this.typeIndex]
+    var value = parseFloat(this.input)
+    if (isNaN(value)) {
+      this.output = ''
+      return
+    }
+    var standard = type.list[this.unit1Index].back(value)
+    var result = type.list[this.unit2Index].to(standard)
+    result = Math.round(result * 1000000) / 1000000
+    this.output = String(result)
+  },
+
+  pressDigit(d) {
+    this.input = this.input + d
+    this.computeOutput()
+  },
+
+  pressDot() {
+    if (this.input.indexOf('.') === -1) {
+      this.input = (this.input === '' ? '0' : this.input) + '.'
+      this.computeOutput()
+    }
+  },
+
+  toggleSign() {
+    if (this.input.charAt(0) === '-') {
+      this.input = this.input.slice(1)
+    } else {
+      this.input = '-' + this.input
+    }
+    this.computeOutput()
+  },
+
+  backspaceInput() {
+    this.input = this.input.slice(0, -1)
+    this.computeOutput()
+  },
+
+  clearInput() {
+    this.input = ''
+    this.computeOutput()
+  },
+
+  swapUnits() {
+    var temp = this.unit1Index
+    this.unit1Index = this.unit2Index
+    this.unit2Index = temp
+    this.input = this.output
+    this.syncDisplay()
+    this.saveState()
+  },
+
+  openTypeList() {
+    this.listMode = 'type'
+    this.listTitle = '选择类型'
+    var items = []
+    for (var i = 0; i < TYPES.length; i++) {
+      items.push({ name: TYPES[i].name, shortname: '', selected: i === this.typeIndex })
+    }
+    this.listItems = items
+    this.showList = true
+  },
+
+  openUnit1List() {
+    this.listMode = 'unit1'
+    this.listTitle = TYPES[this.typeIndex].name + ' - 单位一'
+    this.buildUnitList(this.unit1Index)
+  },
+
+  openUnit2List() {
+    this.listMode = 'unit2'
+    this.listTitle = TYPES[this.typeIndex].name + ' - 单位二'
+    this.buildUnitList(this.unit2Index)
+  },
+
+  buildUnitList(currentIndex) {
+    var list = TYPES[this.typeIndex].list
+    var items = []
+    for (var i = 0; i < list.length; i++) {
+      items.push({ name: list[i].name, shortname: list[i].shortname, selected: i === currentIndex })
+    }
+    this.listItems = items
+    this.showList = true
+  },
+
+  chooseItem(idx) {
+    if (this.listMode === 'type') {
+      this.typeIndex = idx
+      this.unit1Index = 0
+      this.unit2Index = TYPES[idx].list.length > 1 ? 1 : 0
+      this.input = ''
+    } else if (this.listMode === 'unit1') {
+      this.unit1Index = idx
+    } else if (this.listMode === 'unit2') {
+      this.unit2Index = idx
+    }
+    this.syncDisplay()
+    this.saveState()
+    this.showList = false
+  }
+}
+</script>
