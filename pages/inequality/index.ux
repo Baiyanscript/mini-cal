@@ -1,0 +1,408 @@
+<template>
+  <div class="container" onswipe="blockSwipe">
+    <text class="time">{{time}}</text>
+    <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
+    <text class="title">解不等式</text>
+
+    <div class="type-row">
+      <div if="{{isLinear}}" class="type-btn type-btn-active" onclick="setType('linear')">
+        <text class="type-text">一元一次</text>
+      </div>
+      <div if="{{!isLinear}}" class="type-btn" onclick="setType('linear')">
+        <text class="type-text">一元一次</text>
+      </div>
+      <div if="{{!isLinear}}" class="type-btn type-btn-active" onclick="setType('quadratic')">
+        <text class="type-text">一元二次</text>
+      </div>
+      <div if="{{isLinear}}" class="type-btn" onclick="setType('quadratic')">
+        <text class="type-text">一元二次</text>
+      </div>
+    </div>
+
+    <div class="op-row">
+      <div if="{{operator=='>'}}" class="op-btn op-btn-active" onclick="setOperator('>')"><text class="op-text">&gt;</text></div>
+      <div if="{{operator!='>'}}" class="op-btn" onclick="setOperator('>')"><text class="op-text">&gt;</text></div>
+
+      <div if="{{operator=='>='}}" class="op-btn op-btn-active" onclick="setOperator('>=')"><text class="op-text">&gt;=</text></div>
+      <div if="{{operator!='>='}}" class="op-btn" onclick="setOperator('>=')"><text class="op-text">&gt;=</text></div>
+
+      <div if="{{operator=='<'}}" class="op-btn op-btn-active" onclick="setOperator('<')"><text class="op-text">&lt;</text></div>
+      <div if="{{operator!='<'}}" class="op-btn" onclick="setOperator('<')"><text class="op-text">&lt;</text></div>
+
+      <div if="{{operator=='<='}}" class="op-btn op-btn-active" onclick="setOperator('<=')"><text class="op-text">&lt;=</text></div>
+      <div if="{{operator!='<='}}" class="op-btn" onclick="setOperator('<=')"><text class="op-text">&lt;=</text></div>
+    </div>
+
+    <div class="chip-row">
+      <div if="{{activeField=='a'}}" class="chip chip-active" onclick="selectField('a')">
+        <text class="chip-label">a</text><text class="chip-value">{{a}}</text>
+      </div>
+      <div if="{{activeField!='a'}}" class="chip" onclick="selectField('a')">
+        <text class="chip-label">a</text><text class="chip-value">{{a}}</text>
+      </div>
+
+      <div if="{{activeField=='b'}}" class="chip chip-active" onclick="selectField('b')">
+        <text class="chip-label">b</text><text class="chip-value">{{b}}</text>
+      </div>
+      <div if="{{activeField!='b'}}" class="chip" onclick="selectField('b')">
+        <text class="chip-label">b</text><text class="chip-value">{{b}}</text>
+      </div>
+
+      <div if="{{!isLinear && activeField=='c'}}" class="chip chip-active" onclick="selectField('c')">
+        <text class="chip-label">c</text><text class="chip-value">{{c}}</text>
+      </div>
+      <div if="{{!isLinear && activeField!='c'}}" class="chip" onclick="selectField('c')">
+        <text class="chip-label">c</text><text class="chip-value">{{c}}</text>
+      </div>
+    </div>
+
+    <div class="keypad">
+      <div class="krow">
+        <div class="kbtn kbtn-func" onclick="clearField()"><text class="kbtn-text">C</text></div>
+        <div class="kbtn kbtn-func" onclick="backspace()"><image class="kbtn-icon" src="/common/icon/del.png"></image></div>
+        <div class="kbtn kbtn-func" onclick="toggleSign()"><text class="kbtn-text-small">+/-</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressDigit('7')"><text class="kbtn-text">7</text></div>
+        <div class="kbtn" onclick="pressDigit('8')"><text class="kbtn-text">8</text></div>
+        <div class="kbtn" onclick="pressDigit('9')"><text class="kbtn-text">9</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressDigit('4')"><text class="kbtn-text">4</text></div>
+        <div class="kbtn" onclick="pressDigit('5')"><text class="kbtn-text">5</text></div>
+        <div class="kbtn" onclick="pressDigit('6')"><text class="kbtn-text">6</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressDigit('1')"><text class="kbtn-text">1</text></div>
+        <div class="kbtn" onclick="pressDigit('2')"><text class="kbtn-text">2</text></div>
+        <div class="kbtn" onclick="pressDigit('3')"><text class="kbtn-text">3</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressDigit('0')"><text class="kbtn-text">0</text></div>
+        <div class="kbtn" onclick="pressDot()"><text class="kbtn-text">.</text></div>
+        <div class="kbtn-spacer"></div>
+      </div>
+    </div>
+
+    <div class="solve-btn" onclick="solve()"><text class="solve-btn-text">求解</text></div>
+
+    <text class="result">{{solution}}</text>
+  </div>
+</template>
+
+<style>
+.container {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  background-color: #000000;
+  padding-top: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  position: relative;
+}
+
+.time {
+  width: 100%;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 2px;
+}
+
+.back-btn {
+  width: 64px;
+  height: 45px;
+}
+
+.title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.type-row {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.type-btn {
+  width: 82px;
+  height: 28px;
+  justify-content: center;
+  align-items: center;
+  background-color: #262626;
+  border-radius: 14px;
+}
+
+.type-btn-active {
+  background-color: #007AFF;
+}
+
+.type-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.op-row {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.op-btn {
+  width: 38px;
+  height: 26px;
+  justify-content: center;
+  align-items: center;
+  background-color: #262626;
+  border-radius: 13px;
+}
+
+.op-btn-active {
+  background-color: #FF9500;
+}
+
+.op-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.chip-row {
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.chip {
+  flex: 1;
+  height: 32px;
+  margin-right: 6px;
+  border-radius: 16px;
+  background-color: #262626;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.chip-active {
+  background-color: #007AFF;
+}
+
+.chip-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-right: 4px;
+}
+
+.chip-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.keypad {
+  width: 100%;
+  flex-direction: column;
+  margin-bottom: 5px;
+}
+
+.krow {
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.kbtn {
+  flex: 1;
+  height: 30px;
+  margin-right: 6px;
+  border-radius: 15px;
+  background-color: #262626;
+  justify-content: center;
+  align-items: center;
+}
+
+.kbtn-spacer {
+  flex: 1;
+  height: 30px;
+  opacity: 0;
+}
+
+.kbtn-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.kbtn-text-small {
+  font-size: 11px;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.kbtn-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.kbtn-func {
+  background-color: #FF9500;
+}
+
+.solve-btn {
+  width: 100%;
+  height: 34px;
+  border-radius: 17px;
+  background-color: #007AFF;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.solve-btn-text {
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.result {
+  font-size: 14px;
+  font-weight: 500;
+  color: #FFFFFF;
+  text-align: center;
+}
+</style>
+
+<script>
+import { solveLinearInequality, solveQuadraticInequality } from '../../common/js/math-utils'
+import router from '@system.router'
+
+export default {
+  data: {
+    time: '',
+    isLinear: true,
+    operator: '>',
+    activeField: 'a',
+    a: '0',
+    b: '0',
+    c: '0',
+    solution: ''
+  },
+
+  updateTime() {
+    var date = new Date()
+    var hour = String(date.getHours()).padStart(2, '0')
+    var minute = String(date.getMinutes()).padStart(2, '0')
+    this.time = hour + ':' + minute
+  },
+
+  onInit() {
+    this.updateTime()
+    this.timer = setInterval(() => {
+      this.updateTime()
+    }, 60000)
+  },
+
+  onShow() {
+    this.updateTime()
+  },
+
+  blockSwipe() {
+    // 攔截滑動手勢,只允許點擊 back.png 離開頁面
+  },
+
+  onDestroy() {
+    clearInterval(this.timer)
+  },
+
+  goBack() {
+    router.back()
+  },
+
+  setType(type) {
+    this.isLinear = type === 'linear'
+    if (this.isLinear && this.activeField === 'c') {
+      this.activeField = 'a'
+    }
+    this.solution = ''
+  },
+
+  setOperator(op) {
+    this.operator = op
+  },
+
+  selectField(field) {
+    this.activeField = field
+  },
+
+  pressDigit(digit) {
+    var field = this.activeField
+    var cur = this[field]
+    if (cur === '0') {
+      cur = ''
+    }
+    this[field] = cur + digit
+  },
+
+  pressDot() {
+    var field = this.activeField
+    var cur = this[field]
+    if (cur.indexOf('.') === -1) {
+      this[field] = cur + '.'
+    }
+  },
+
+  toggleSign() {
+    var field = this.activeField
+    var cur = this[field]
+    if (cur.charAt(0) === '-') {
+      this[field] = cur.slice(1)
+    } else {
+      this[field] = '-' + cur
+    }
+  },
+
+  clearField() {
+    this[this.activeField] = '0'
+  },
+
+  backspace() {
+    var field = this.activeField
+    var cur = this[field].slice(0, -1)
+    if (cur === '' || cur === '-') {
+      cur = '0'
+    }
+    this[field] = cur
+  },
+
+  solve() {
+    try {
+      var a = parseFloat(this.a || '0')
+      var b = parseFloat(this.b || '0')
+
+      if (this.isLinear) {
+        this.solution = solveLinearInequality(a, b, this.operator)
+      } else {
+        var c = parseFloat(this.c || '0')
+        this.solution = solveQuadraticInequality(a, b, c, this.operator)
+      }
+    } catch (error) {
+      this.solution = '求解错误: ' + error.message
+    }
+  }
+}
+</script>

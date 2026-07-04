@@ -1,0 +1,33 @@
+<script>
+import prompt from '@system.prompt'
+
+export default {
+  data: {
+    appName: 'Mini计算机',
+    version: '1.0.0'
+  },
+
+  onCreate() {
+    console.info('Mini计算机已创建')
+  },
+
+  onShow() {
+    console.info('Mini计算机显示到前台')
+  },
+
+  onHide() {
+    console.info('Mini计算机隐藏到后台')
+  },
+
+  onDestroy() {
+    console.info('Mini计算机已销毁')
+  },
+
+  showMessage(message) {
+    prompt.showToast({
+      message: message,
+      duration: 2000
+    })
+  }
+}
+</script>

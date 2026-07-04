@@ -1,0 +1,210 @@
+<template>
+  <div class="container" onswipe="blockSwipe">
+    <text class="time">{{time}}</text>
+    <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
+    <div class="display">
+      <text class="expression">{{expression}}</text>
+      <text class="result">{{result}}</text>
+    </div>
+
+    <div class="keypad">
+      <div class="row">
+        <div class="btn" onclick="press('sin(')"><text class="btn-text">sin</text></div>
+        <div class="btn" onclick="press('cos(')"><text class="btn-text">cos</text></div>
+        <div class="btn" onclick="press('tan(')"><text class="btn-text">tan</text></div>
+        <div class="btn" onclick="press('√(')"><text class="btn-text">√</text></div>
+      </div>
+      <div class="row">
+        <div class="btn" onclick="press('7')"><text class="btn-text">7</text></div>
+        <div class="btn" onclick="press('8')"><text class="btn-text">8</text></div>
+        <div class="btn" onclick="press('9')"><text class="btn-text">9</text></div>
+        <div class="btn" onclick="press('/')"><text class="btn-text">/</text></div>
+      </div>
+      <div class="row">
+        <div class="btn" onclick="press('4')"><text class="btn-text">4</text></div>
+        <div class="btn" onclick="press('5')"><text class="btn-text">5</text></div>
+        <div class="btn" onclick="press('6')"><text class="btn-text">6</text></div>
+        <div class="btn" onclick="press('*')"><text class="btn-text">*</text></div>
+      </div>
+      <div class="row">
+        <div class="btn" onclick="press('1')"><text class="btn-text">1</text></div>
+        <div class="btn" onclick="press('2')"><text class="btn-text">2</text></div>
+        <div class="btn" onclick="press('3')"><text class="btn-text">3</text></div>
+        <div class="btn" onclick="press('-')"><text class="btn-text">-</text></div>
+      </div>
+      <div class="row">
+        <div class="btn" onclick="press('0')"><text class="btn-text">0</text></div>
+        <div class="btn" onclick="press('.')"><text class="btn-text">.</text></div>
+        <div class="btn" onclick="press('(')"><text class="btn-text">(</text></div>
+        <div class="btn" onclick="press('+')"><text class="btn-text">+</text></div>
+      </div>
+      <div class="row">
+        <div class="btn btn-func" onclick="clearAll()"><text class="btn-text">C</text></div>
+        <div class="btn btn-func" onclick="backspace()"><image class="btn-icon" src="/common/icon/del.png"></image></div>
+        <div class="btn btn-func" onclick="press(')')"><text class="btn-text">)</text></div>
+        <div class="btn btn-primary" onclick="calculate()"><text class="btn-text">=</text></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+.container {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  background-color: #000000;
+  padding-top: 14px;
+  padding-right: 10px;
+  padding-bottom: 14px;
+  padding-left: 10px;
+  position: relative;
+}
+
+.time {
+  width: 100%;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 4px;
+}
+
+.back-btn {
+  width: 64px;
+  height: 45px;
+}
+
+.display {
+  width: 100%;
+  height: 54px;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.expression {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: right;
+  margin-bottom: 4px;
+}
+
+.result {
+  font-size: 28px;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-align: right;
+}
+
+.keypad {
+  width: 100%;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.row {
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.btn {
+  flex: 1;
+  height: 48px;
+  margin-right: 6px;
+  border-radius: 25px;
+  background-color: #262626;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-text {
+  color: #FFFFFF;
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.btn-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.btn-func {
+  background-color: #FF9500;
+}
+
+.btn-primary {
+  background-color: #007AFF;
+  margin-right: 0px;
+}
+</style>
+
+<script>
+import { evaluate } from '../../common/js/math-utils'
+import router from '@system.router'
+
+export default {
+  data: {
+    time: '',
+    expression: '',
+    result: '0'
+  },
+
+  updateTime() {
+    var date = new Date()
+    var hour = String(date.getHours()).padStart(2, '0')
+    var minute = String(date.getMinutes()).padStart(2, '0')
+    this.time = hour + ':' + minute
+  },
+
+  onInit() {
+    this.updateTime()
+    this.timer = setInterval(() => {
+      this.updateTime()
+    }, 60000)
+  },
+
+  onShow() {
+    this.updateTime()
+  },
+
+  blockSwipe() {
+    // 攔截滑動手勢,只允許點擊 back.png 離開頁面
+  },
+
+  onDestroy() {
+    clearInterval(this.timer)
+  },
+
+  goBack() {
+    router.back()
+  },
+
+  press(value) {
+    this.expression = this.expression + value
+  },
+
+  clearAll() {
+    this.expression = ''
+    this.result = '0'
+  },
+
+  backspace() {
+    this.expression = this.expression.slice(0, -1)
+  },
+
+  calculate() {
+    try {
+      var value = evaluate(this.expression)
+      this.result = String(Math.round(value * 1000000) / 1000000)
+    } catch (error) {
+      this.result = '错误'
+    }
+  }
+}
+</script>

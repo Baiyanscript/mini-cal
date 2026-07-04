@@ -1,0 +1,168 @@
+<template>
+  <div class="container" onswipe="blockSwipe">
+    <div class="menu-wrap">
+      <text class="title">Mini计算机</text>
+
+      <div class="menu-item" onclick="go('/pages/calculator')">
+        <text class="menu-text">计算器</text>
+      </div>
+      <div class="menu-item" onclick="go('/pages/equation')">
+        <text class="menu-text">解方程</text>
+      </div>
+      <div class="menu-item" onclick="go('/pages/inequality')">
+        <text class="menu-text">解不等式</text>
+      </div>
+    </div>
+
+    <image class="info-btn" src="/common/icon/info.png" onclick="openAbout()"></image>
+
+    <image if="{{ab}}" class="about-overlay" src="/common/icon/about.png" onclick="closeAbout()"></image>
+
+    <text class="time">{{time}}</text>
+    <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
+  </div>
+</template>
+
+<style>
+.container {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  background-color: #000000;
+  position: relative;
+  padding-top: 10px;
+}
+
+.time {
+  position: absolute;
+  left: 0px;
+  top: 6px;
+  width: 192px;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.back-btn {
+  position: absolute;
+  left: 64px;
+  top: 32px;
+  width: 64px;
+  height: 45px;
+}
+
+.info-btn {
+  width: 64px;
+  height: 45px;
+  margin-bottom: 8px;
+}
+
+.menu-wrap {
+  width: 100%;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 108px;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 32px;
+}
+
+.menu-item {
+  width: 184px;
+  height: 76px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #262626;
+  border-radius: 38px;
+  margin-bottom: 18px;
+}
+
+.menu-text {
+  font-size: 23px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.about-overlay {
+  position: absolute;
+  left: 0px;
+  top: 10px;
+  width: 192px;
+  height: 490px;
+  background-color: #000000;
+}
+</style>
+
+<script>
+import router from '@system.router'
+
+export default {
+  data: {
+    time: '',
+    ab: false
+  },
+
+  updateTime() {
+    var date = new Date()
+    var hour = String(date.getHours()).padStart(2, '0')
+    var minute = String(date.getMinutes()).padStart(2, '0')
+    this.time = hour + ':' + minute
+  },
+
+  onInit() {
+    this.updateTime()
+    this.timer = setInterval(() => {
+      this.updateTime()
+    }, 60000)
+  },
+
+  onShow() {
+    this.updateTime()
+  },
+
+  blockSwipe() {
+    // 攔截滑動手勢,只允許點擊 back.png 離開頁面
+  },
+
+  onDestroy() {
+    clearInterval(this.timer)
+  },
+
+  onBackPress() {
+    if (this.ab) {
+      this.ab = false
+      return true
+    }
+    return false
+  },
+
+  go(url) {
+    router.push({ uri: url })
+  },
+
+  goBack() {
+    if (this.ab) {
+      this.ab = false
+    } else {
+      router.back()
+    }
+  },
+
+  openAbout() {
+    this.ab = true
+  },
+
+  closeAbout() {
+    this.ab = false
+  }
+}
+</script>
