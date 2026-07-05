@@ -3,21 +3,21 @@
     <text class="time">{{time}}</text>
     <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
 
-    <text class="title">设置</text>
+    <text class="title">{{$t("settingsTitle")}}</text>
 
     <div class="switch-row">
-      <text class="switch-label">精确模式</text>
+      <text class="switch-label">{{$t("exactModeLabel")}}</text>
       <image if="{{exactMode}}" class="switch-img" src="/common/icon/on.png" onclick="toggleExactMode()"></image>
       <image if="{{!exactMode}}" class="switch-img" src="/common/icon/off.png" onclick="toggleExactMode()"></image>
     </div>
-    <text class="hint">开启后，计算结果将尝试以分数、根号等形式呈现，并自动约分</text>
+    <text class="hint">{{$t("exactModeHint")}}</text>
 
     <div class="switch-row">
-      <text class="switch-label">震动反馈</text>
+      <text class="switch-label">{{$t("vibrationLabel")}}</text>
       <image if="{{vibrationEnabled}}" class="switch-img" src="/common/icon/on.png" onclick="toggleVibration()"></image>
       <image if="{{!vibrationEnabled}}" class="switch-img" src="/common/icon/off.png" onclick="toggleVibration()"></image>
     </div>
-    <text class="hint">关闭后，按钮点击、返回等操作将不再震动</text>
+    <text class="hint">{{$t("vibrationHint")}}</text>
   </div>
 </template>
 

@@ -301,6 +301,8 @@ import { vibrateShort } from '../../common/js/vibrate'
 import storage from '@system.storage'
 import { TYPES } from '../../common/js/units'
 
+var CATEGORY_KEYS = ['catLength', 'catArea', 'catVolume', 'catWeight', 'catTemp', 'catTime', 'catSpeed', 'catAngle', 'catEnergy', 'catPressure', 'catData']
+
 export default {
   data: {
     time: '',
@@ -385,7 +387,7 @@ export default {
 
   syncDisplay() {
     var type = TYPES[this.typeIndex]
-    this.typeName = type.name
+    this.typeName = this.$t(CATEGORY_KEYS[this.typeIndex])
     this.showNegative = type.negative
     this.unit1Short = type.list[this.unit1Index].shortname
     this.unit2Short = type.list[this.unit2Index].shortname
@@ -458,10 +460,10 @@ export default {
   openTypeList() {
     vibrateShort()
     this.listMode = 'type'
-    this.listTitle = '选择类型'
+    this.listTitle = this.$t('convSelectType')
     var items = []
     for (var i = 0; i < TYPES.length; i++) {
-      items.push({ name: TYPES[i].name, shortname: '', selected: i === this.typeIndex })
+      items.push({ name: this.$t(CATEGORY_KEYS[i]), shortname: '', selected: i === this.typeIndex })
     }
     this.listItems = items
     this.showList = true
@@ -470,14 +472,14 @@ export default {
   openUnit1List() {
     vibrateShort()
     this.listMode = 'unit1'
-    this.listTitle = TYPES[this.typeIndex].name + ' - 单位一'
+    this.listTitle = this.$t(CATEGORY_KEYS[this.typeIndex]) + ' - ' + this.$t('convUnit1')
     this.buildUnitList(this.unit1Index)
   },
 
   openUnit2List() {
     vibrateShort()
     this.listMode = 'unit2'
-    this.listTitle = TYPES[this.typeIndex].name + ' - 单位二'
+    this.listTitle = this.$t(CATEGORY_KEYS[this.typeIndex]) + ' - ' + this.$t('convUnit2')
     this.buildUnitList(this.unit2Index)
   },
 

@@ -2,20 +2,20 @@
   <div class="container" onswipe="blockSwipe">
     <text class="time">{{time}}</text>
     <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
-    <text class="title">解方程</text>
+    <text class="title">{{$t("eqTitle")}}</text>
 
     <div class="type-row">
       <div if="{{isLinear}}" class="type-btn type-btn-active" onclick="setType('linear')">
-        <text class="type-text">一元一次</text>
+        <text class="type-text">{{$t("typeLinear")}}</text>
       </div>
       <div if="{{!isLinear}}" class="type-btn" onclick="setType('linear')">
-        <text class="type-text">一元一次</text>
+        <text class="type-text">{{$t("typeLinear")}}</text>
       </div>
       <div if="{{!isLinear}}" class="type-btn type-btn-active" onclick="setType('quadratic')">
-        <text class="type-text">一元二次</text>
+        <text class="type-text">{{$t("typeQuadratic")}}</text>
       </div>
       <div if="{{isLinear}}" class="type-btn" onclick="setType('quadratic')">
-        <text class="type-text">一元二次</text>
+        <text class="type-text">{{$t("typeQuadratic")}}</text>
       </div>
     </div>
 
@@ -73,7 +73,7 @@
       </div>
     </div>
 
-    <div class="solve-btn" onclick="solve()"><text class="solve-btn-text">求解</text></div>
+    <div class="solve-btn" onclick="solve()"><text class="solve-btn-text">{{$t("solveBtn")}}</text></div>
 
     <text class="result">{{solution}}</text>
   </div>
@@ -376,7 +376,7 @@ export default {
         var c = parseFloat(this.c || '0')
         var roots = solveQuadratic(a, b, c)
         if (!roots) {
-          this.solution = '无实数解'
+          this.solution = this.$t('noRealSolution')
         } else if (roots.length === 1) {
           this.solution = 'x = ' + roots[0]
         } else {
@@ -384,7 +384,8 @@ export default {
         }
       }
     } catch (error) {
-      this.solution = '求解错误: ' + error.message
+      var message = error.message === 'ERR_NOT_LINEAR' ? this.$t('errNotLinear') : error.message
+      this.solution = this.$t('solveErrorPrefix') + message
     }
   }
 }

@@ -1,19 +1,19 @@
 <template>
   <div class="container" onswipe="blockSwipe">
     <div class="menu-wrap">
-      <text class="title">Mini计算机</text>
+      <text class="title">{{$t("homeTitle")}}</text>
 
       <div class="menu-item" onclick="go('/pages/calculator')">
-        <text class="menu-text">计算器</text>
+        <text class="menu-text">{{$t("menuCalculator")}}</text>
       </div>
       <div class="menu-item" onclick="go('/pages/equation')">
-        <text class="menu-text">解方程</text>
+        <text class="menu-text">{{$t("menuEquation")}}</text>
       </div>
       <div class="menu-item" onclick="go('/pages/inequality')">
-        <text class="menu-text">解不等式</text>
+        <text class="menu-text">{{$t("menuInequality")}}</text>
       </div>
       <div class="menu-item" onclick="go('/pages/converter')">
-        <text class="menu-text">单位换算</text>
+        <text class="menu-text">{{$t("menuConverter")}}</text>
       </div>
     </div>
 

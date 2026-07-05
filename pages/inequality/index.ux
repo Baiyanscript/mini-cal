@@ -2,20 +2,20 @@
   <div class="container" onswipe="blockSwipe">
     <text class="time">{{time}}</text>
     <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
-    <text class="title">解不等式</text>
+    <text class="title">{{$t("ineqTitle")}}</text>
 
     <div class="type-row">
       <div if="{{isLinear}}" class="type-btn type-btn-active" onclick="setType('linear')">
-        <text class="type-text">一元一次</text>
+        <text class="type-text">{{$t("typeLinear")}}</text>
       </div>
       <div if="{{!isLinear}}" class="type-btn" onclick="setType('linear')">
-        <text class="type-text">一元一次</text>
+        <text class="type-text">{{$t("typeLinear")}}</text>
       </div>
       <div if="{{!isLinear}}" class="type-btn type-btn-active" onclick="setType('quadratic')">
-        <text class="type-text">一元二次</text>
+        <text class="type-text">{{$t("typeQuadratic")}}</text>
       </div>
       <div if="{{isLinear}}" class="type-btn" onclick="setType('quadratic')">
-        <text class="type-text">一元二次</text>
+        <text class="type-text">{{$t("typeQuadratic")}}</text>
       </div>
     </div>
 
@@ -84,7 +84,7 @@
       </div>
     </div>
 
-    <div class="solve-btn" onclick="solve()"><text class="solve-btn-text">求解</text></div>
+    <div class="solve-btn" onclick="solve()"><text class="solve-btn-text">{{$t("solveBtn")}}</text></div>
 
     <text class="result">{{solution}}</text>
   </div>
@@ -403,16 +403,25 @@ export default {
     try {
       var a = parseFloat(this.a || '0')
       var b = parseFloat(this.b || '0')
+      var raw
 
       if (this.isLinear) {
-        this.solution = solveLinearInequality(a, b, this.operator)
+        raw = solveLinearInequality(a, b, this.operator)
       } else {
         var c = parseFloat(this.c || '0')
-        this.solution = solveQuadraticInequality(a, b, c, this.operator)
+        raw = solveQuadraticInequality(a, b, c, this.operator)
       }
+      this.solution = this.translateSolution(raw)
     } catch (error) {
-      this.solution = '求解错误: ' + error.message
+      var message = error.message === 'ERR_A_ZERO' ? this.$t('errACannotZero') : error.message
+      this.solution = this.$t('solveErrorPrefix') + message
     }
+  },
+
+  translateSolution(raw) {
+    if (raw === 'ALL_REAL') return this.$t('allReal')
+    if (raw === 'NO_SOLUTION') return this.$t('noSolution')
+    return raw.split('||OR||').join(this.$t('orWord'))
   }
 }
 </script>

@@ -233,7 +233,7 @@ export default {
         this.result = String(rounded)
       }
     } catch (error) {
-      this.result = '错误'
+      this.result = this.$t('calcError')
     }
   }
 }

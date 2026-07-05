@@ -155,7 +155,7 @@ export function toExactForm(value) {
 
 // 一元一次方程 ax + b = 0
 export function solveLinear(a, b) {
-  if (a === 0) throw new Error('不是一元一次方程')
+  if (a === 0) throw new Error('ERR_NOT_LINEAR')
   return -b / a
 }
 
@@ -172,7 +172,7 @@ export function solveQuadratic(a, b, c) {
 
 // 一元一次不等式 ax + b [运算子] 0
 export function solveLinearInequality(a, b, operator) {
-  if (a === 0) throw new Error('系数a不可为0')
+  if (a === 0) throw new Error('ERR_A_ZERO')
   var solution = -b / a
   var flip = a < 0
   var op = operator
@@ -186,23 +186,24 @@ export function solveLinearInequality(a, b, operator) {
 }
 
 // 一元二次不等式 ax^2 + bx + c [运算子] 0
+// 回傳值可能包含代碼標記 ALL_REAL / NO_SOLUTION / ||OR||，由呼叫端(頁面)依語言翻譯後替換
 export function solveQuadraticInequality(a, b, c, operator) {
   var roots = solveQuadratic(a, b, c)
   var opensUp = a > 0
 
   if (!roots) {
     if (operator === '>' || operator === '>=') {
-      return opensUp ? '全体实数' : '无解'
+      return opensUp ? 'ALL_REAL' : 'NO_SOLUTION'
     } else {
-      return opensUp ? '无解' : '全体实数'
+      return opensUp ? 'NO_SOLUTION' : 'ALL_REAL'
     }
   }
 
   if (roots.length === 1) {
     var r = roundResult(roots[0])
-    if (operator === '>') return opensUp ? ('x ≠ ' + r) : '无解'
-    if (operator === '>=') return '全体实数'
-    if (operator === '<') return '无解'
+    if (operator === '>') return opensUp ? ('x ≠ ' + r) : 'NO_SOLUTION'
+    if (operator === '>=') return 'ALL_REAL'
+    if (operator === '<') return 'NO_SOLUTION'
     if (operator === '<=') return 'x = ' + r
   }
 
@@ -213,11 +214,11 @@ export function solveQuadraticInequality(a, b, c, operator) {
   var between = operator === '<' || operator === '<='
 
   if (opensUp) {
-    if (outside) return 'x < ' + r1 + ' 或 x > ' + r2
+    if (outside) return 'x < ' + r1 + ' ||OR|| x > ' + r2
     if (between) return r1 + ' < x < ' + r2
   } else {
     if (outside) return r1 + ' < x < ' + r2
-    if (between) return 'x < ' + r1 + ' 或 x > ' + r2
+    if (between) return 'x < ' + r1 + ' ||OR|| x > ' + r2
   }
 }
 
