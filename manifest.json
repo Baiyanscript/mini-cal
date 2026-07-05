@@ -10,7 +10,8 @@
     { "name": "system.prompt" },
     { "name": "system.router" },
     { "name": "system.app" },
-    { "name": "system.storage" }
+    { "name": "system.storage" },
+    { "name": "system.vibrator" }
   ],
   "config": {
     "logLevel": "log",
@@ -32,6 +33,9 @@
         "component": "index"
       },
       "pages/converter": {
+        "component": "index"
+      },
+      "pages/settings": {
         "component": "index"
       }
     }

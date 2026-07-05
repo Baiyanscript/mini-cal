@@ -59,6 +59,100 @@ export function toDecimal(fraction) {
   return parseFloat(parts[0]) / parseFloat(parts[1])
 }
 
+function gcdInt(a, b) {
+  a = Math.abs(Math.round(a))
+  b = Math.abs(Math.round(b))
+  while (b !== 0) {
+    var t = b
+    b = a % b
+    a = t
+  }
+  return a
+}
+
+// 嘗試把小數化為 i√c 的根號形式（i,c 為整數，c 已去除完全平方因數）
+function toSqrtForm(value) {
+  if (!isFinite(value) || isNaN(value)) return null
+  var abs = Math.abs(value)
+  if (abs < 1e-10) return '0'
+
+  var sign = value < 0 ? '-' : ''
+  var squared = abs * abs
+  if (!isFinite(squared) || squared > Number.MAX_SAFE_INTEGER) return null
+
+  var n = Math.round(squared)
+  if (Math.abs(abs - Math.sqrt(n)) > 1e-10) return null
+
+  var i = 1
+  var c = n
+  for (var f = 2; f * f <= c; f++) {
+    while (c % (f * f) === 0) {
+      i *= f
+      c /= (f * f)
+    }
+  }
+
+  if (c === 1) return sign + String(i)
+  if (i === 1) return sign + '√' + c
+  return sign + i + '√' + c
+}
+
+// 嘗試把小數化為最簡分數 a/b（分母上限1000,誤差容忍0.001）
+function toFractionExact(value) {
+  if (value === 0) return '0'
+  var sign = value < 0 ? -1 : 1
+  var abs = Math.abs(value)
+
+  if (Math.abs(Math.round(abs) - abs) < 1e-10) {
+    var whole = Math.round(abs)
+    return sign === 1 ? String(whole) : '-' + String(whole)
+  }
+
+  var bestNum = 0
+  var bestDen = 1
+  var bestErr = abs
+  for (var den = 1; den <= 1000; den++) {
+    var num = Math.round(abs * den)
+    var err = Math.abs(abs - num / den)
+    if (err < bestErr) {
+      bestErr = err
+      bestNum = num
+      bestDen = den
+    }
+    if (err < 1e-10) break
+  }
+
+  if (bestErr < 0.001) {
+    var g = gcdInt(bestNum, bestDen)
+    var rn = bestNum / g
+    var rd = bestDen / g
+    if (rd === 1) return sign === 1 ? String(rn) : '-' + String(rn)
+    return sign === 1 ? (rn + '/' + rd) : ('-' + rn + '/' + rd)
+  }
+  return null
+}
+
+// 精確模式主入口:整数 -> π/e -> 根号形式 -> 分数形式,都不符合則回傳null(交由呼叫端顯示小數)
+export function toExactForm(value) {
+  if (!isFinite(value) || isNaN(value)) return null
+
+  if (Math.abs(value - Math.round(value)) < 1e-10) {
+    return String(Math.round(value))
+  }
+
+  var PI = Math.PI
+  var E = Math.E
+  if (Math.abs(value - PI) < 1e-10) return 'π'
+  if (Math.abs(value + PI) < 1e-10) return '-π'
+  if (Math.abs(value - E) < 1e-10) return 'e'
+  if (Math.abs(value + E) < 1e-10) return '-e'
+
+  var sqrtForm = toSqrtForm(value)
+  if (sqrtForm !== null) return sqrtForm
+
+  return toFractionExact(value)
+}
+
 // 一元一次方程 ax + b = 0
 export function solveLinear(a, b) {
   if (a === 0) throw new Error('不是一元一次方程')

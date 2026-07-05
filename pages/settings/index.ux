@@ -1,0 +1,177 @@
+<template>
+  <div class="container" onswipe="blockSwipe">
+    <text class="time">{{time}}</text>
+    <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
+
+    <text class="title">设置</text>
+
+    <div class="switch-row">
+      <text class="switch-label">精确模式</text>
+      <image if="{{exactMode}}" class="switch-img" src="/common/icon/on.png" onclick="toggleExactMode()"></image>
+      <image if="{{!exactMode}}" class="switch-img" src="/common/icon/off.png" onclick="toggleExactMode()"></image>
+    </div>
+    <text class="hint">开启后，计算结果将尝试以分数、根号等形式呈现，并自动约分</text>
+
+    <div class="switch-row">
+      <text class="switch-label">震动反馈</text>
+      <image if="{{vibrationEnabled}}" class="switch-img" src="/common/icon/on.png" onclick="toggleVibration()"></image>
+      <image if="{{!vibrationEnabled}}" class="switch-img" src="/common/icon/off.png" onclick="toggleVibration()"></image>
+    </div>
+    <text class="hint">关闭后，按钮点击、返回等操作将不再震动</text>
+  </div>
+</template>
+
+<style>
+.container {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  background-color: #000000;
+  position: relative;
+  padding-top: 10px;
+}
+
+.time {
+  width: 100%;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 2px;
+}
+
+.back-btn {
+  width: 64px;
+  height: 45px;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 16px;
+}
+
+.switch-row {
+  width: 170px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #262626;
+  border-radius: 14px;
+  padding-top: 10px;
+  padding-right: 12px;
+  padding-bottom: 10px;
+  padding-left: 14px;
+  margin-bottom: 12px;
+}
+
+.switch-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.switch-img {
+  width: 44px;
+  height: 31px;
+}
+
+.hint {
+  width: 170px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: left;
+}
+</style>
+
+<script>
+import router from '@system.router'
+import storage from '@system.storage'
+import vibrator from '@system.vibrator'
+
+export default {
+  data: {
+    time: '',
+    exactMode: false,
+    vibrationEnabled: true
+  },
+
+  updateTime() {
+    var date = new Date()
+    var hour = String(date.getHours()).padStart(2, '0')
+    var minute = String(date.getMinutes()).padStart(2, '0')
+    this.time = hour + ':' + minute
+  },
+
+  onInit() {
+    this.updateTime()
+    this.timer = setInterval(() => {
+      this.updateTime()
+    }, 60000)
+
+    var self = this
+    storage.get({
+      key: 'exactMode',
+      success: function (data) {
+        self.exactMode = data === 'true'
+      },
+      fail: function () {
+        self.exactMode = false
+      }
+    })
+    storage.get({
+      key: 'vibrationEnabled',
+      success: function (data) {
+        self.vibrationEnabled = data === null || data === undefined || data === '' ? true : data === 'true'
+      },
+      fail: function () {
+        self.vibrationEnabled = true
+      }
+    })
+  },
+
+  onShow() {
+    this.updateTime()
+  },
+
+  onDestroy() {
+    clearInterval(this.timer)
+  },
+
+  blockSwipe() {
+    // 攔截滑動手勢
+  },
+
+  doVibrate() {
+    if (this.vibrationEnabled) {
+      vibrator.vibrate({ mode: 'short' })
+    }
+  },
+
+  goBack() {
+    this.doVibrate()
+    router.back()
+  },
+
+  toggleExactMode() {
+    this.doVibrate()
+    this.exactMode = !this.exactMode
+    storage.set({
+      key: 'exactMode',
+      value: String(this.exactMode)
+    })
+  },
+
+  toggleVibration() {
+    this.vibrationEnabled = !this.vibrationEnabled
+    storage.set({
+      key: 'vibrationEnabled',
+      value: String(this.vibrationEnabled)
+    })
+    this.doVibrate()
+  }
+}
+</script>

@@ -145,8 +145,10 @@
 </style>
 
 <script>
-import { evaluate } from '../../common/js/math-utils'
+import { evaluate, toExactForm } from '../../common/js/math-utils'
+import { vibrateShort } from '../../common/js/vibrate'
 import router from '@system.router'
+import storage from '@system.storage'
 
 export default {
   data: {
@@ -162,15 +164,31 @@ export default {
     this.time = hour + ':' + minute
   },
 
+  loadExactMode() {
+    var self = this
+    storage.get({
+      key: 'exactMode',
+      success: function (data) {
+        self.exactMode = data === 'true'
+      },
+      fail: function () {
+        self.exactMode = false
+      }
+    })
+  },
+
   onInit() {
     this.updateTime()
     this.timer = setInterval(() => {
       this.updateTime()
     }, 60000)
+    this.exactMode = false
+    this.loadExactMode()
   },
 
   onShow() {
     this.updateTime()
+    this.loadExactMode()
   },
 
   blockSwipe() {
@@ -182,26 +200,38 @@ export default {
   },
 
   goBack() {
+    vibrateShort()
     router.back()
   },
 
   press(value) {
+    vibrateShort()
     this.expression = this.expression + value
   },
 
   clearAll() {
+    vibrateShort()
     this.expression = ''
     this.result = '0'
   },
 
   backspace() {
+    vibrateShort()
     this.expression = this.expression.slice(0, -1)
   },
 
   calculate() {
+    vibrateShort()
     try {
       var value = evaluate(this.expression)
-      this.result = String(Math.round(value * 1000000) / 1000000)
+      var rounded = Math.round(value * 1000000) / 1000000
+
+      if (this.exactMode) {
+        var exact = toExactForm(value)
+        this.result = exact !== null ? exact : String(rounded)
+      } else {
+        this.result = String(rounded)
+      }
     } catch (error) {
       this.result = '错误'
     }

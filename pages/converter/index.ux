@@ -297,6 +297,7 @@
 
 <script>
 import router from '@system.router'
+import { vibrateShort } from '../../common/js/vibrate'
 import storage from '@system.storage'
 import { TYPES } from '../../common/js/units'
 
@@ -363,6 +364,7 @@ export default {
   },
 
   goBack() {
+    vibrateShort()
     if (this.showList) {
       this.showList = false
     } else {
@@ -408,11 +410,13 @@ export default {
   },
 
   pressDigit(d) {
+    vibrateShort()
     this.input = this.input + d
     this.computeOutput()
   },
 
   pressDot() {
+    vibrateShort()
     if (this.input.indexOf('.') === -1) {
       this.input = (this.input === '' ? '0' : this.input) + '.'
       this.computeOutput()
@@ -420,6 +424,7 @@ export default {
   },
 
   toggleSign() {
+    vibrateShort()
     if (this.input.charAt(0) === '-') {
       this.input = this.input.slice(1)
     } else {
@@ -429,16 +434,19 @@ export default {
   },
 
   backspaceInput() {
+    vibrateShort()
     this.input = this.input.slice(0, -1)
     this.computeOutput()
   },
 
   clearInput() {
+    vibrateShort()
     this.input = ''
     this.computeOutput()
   },
 
   swapUnits() {
+    vibrateShort()
     var temp = this.unit1Index
     this.unit1Index = this.unit2Index
     this.unit2Index = temp
@@ -448,6 +456,7 @@ export default {
   },
 
   openTypeList() {
+    vibrateShort()
     this.listMode = 'type'
     this.listTitle = '选择类型'
     var items = []
@@ -459,12 +468,14 @@ export default {
   },
 
   openUnit1List() {
+    vibrateShort()
     this.listMode = 'unit1'
     this.listTitle = TYPES[this.typeIndex].name + ' - 单位一'
     this.buildUnitList(this.unit1Index)
   },
 
   openUnit2List() {
+    vibrateShort()
     this.listMode = 'unit2'
     this.listTitle = TYPES[this.typeIndex].name + ' - 单位二'
     this.buildUnitList(this.unit2Index)
@@ -481,6 +492,7 @@ export default {
   },
 
   chooseItem(idx) {
+    vibrateShort()
     if (this.listMode === 'type') {
       this.typeIndex = idx
       this.unit1Index = 0

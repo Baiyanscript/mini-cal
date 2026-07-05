@@ -19,7 +19,10 @@
 
     <image class="info-btn" src="/common/icon/info.png" onclick="openAbout()"></image>
 
-    <image if="{{ab}}" class="about-overlay" src="/common/icon/about.png" onclick="closeAbout()"></image>
+    <div if="{{ab}}" class="about-overlay">
+      <image class="about-img" src="/common/icon/about.png"></image>
+      <image class="more-btn" src="/common/icon/more.png" onclick="goToSettings()"></image>
+    </div>
 
     <text class="time">{{time}}</text>
     <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
@@ -100,13 +103,30 @@
   left: 0px;
   top: 10px;
   width: 192px;
-  height: 490px;
+  height: 480px;
   background-color: #000000;
+}
+
+.about-img {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 192px;
+  height: 480px;
+}
+
+.more-btn {
+  position: absolute;
+  left: 61px;
+  bottom: 4px;
+  width: 70px;
+  height: 49px;
 }
 </style>
 
 <script>
 import router from '@system.router'
+import { vibrateShort } from '../../common/js/vibrate'
 
 export default {
   data: {
@@ -149,10 +169,12 @@ export default {
   },
 
   go(url) {
+    vibrateShort()
     router.push({ uri: url })
   },
 
   goBack() {
+    vibrateShort()
     if (this.ab) {
       this.ab = false
     } else {
@@ -161,11 +183,17 @@ export default {
   },
 
   openAbout() {
+    vibrateShort()
     this.ab = true
   },
 
   closeAbout() {
     this.ab = false
+  },
+
+  goToSettings() {
+    vibrateShort()
+    router.push({ uri: '/pages/settings' })
   }
 }
 </script>

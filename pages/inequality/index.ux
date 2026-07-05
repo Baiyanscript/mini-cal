@@ -289,6 +289,7 @@
 
 <script>
 import { solveLinearInequality, solveQuadraticInequality } from '../../common/js/math-utils'
+import { vibrateShort } from '../../common/js/vibrate'
 import router from '@system.router'
 
 export default {
@@ -330,10 +331,12 @@ export default {
   },
 
   goBack() {
+    vibrateShort()
     router.back()
   },
 
   setType(type) {
+    vibrateShort()
     this.isLinear = type === 'linear'
     if (this.isLinear && this.activeField === 'c') {
       this.activeField = 'a'
@@ -342,6 +345,7 @@ export default {
   },
 
   setOperator(op) {
+    vibrateShort()
     this.operator = op
   },
 
@@ -350,6 +354,7 @@ export default {
   },
 
   pressDigit(digit) {
+    vibrateShort()
     var field = this.activeField
     var cur = this[field]
     if (cur === '0') {
@@ -359,6 +364,7 @@ export default {
   },
 
   pressDot() {
+    vibrateShort()
     var field = this.activeField
     var cur = this[field]
     if (cur.indexOf('.') === -1) {
@@ -367,6 +373,7 @@ export default {
   },
 
   toggleSign() {
+    vibrateShort()
     var field = this.activeField
     var cur = this[field]
     if (cur.charAt(0) === '-') {
@@ -377,10 +384,12 @@ export default {
   },
 
   clearField() {
+    vibrateShort()
     this[this.activeField] = '0'
   },
 
   backspace() {
+    vibrateShort()
     var field = this.activeField
     var cur = this[field].slice(0, -1)
     if (cur === '' || cur === '-') {
@@ -390,6 +399,7 @@ export default {
   },
 
   solve() {
+    vibrateShort()
     try {
       var a = parseFloat(this.a || '0')
       var b = parseFloat(this.b || '0')
