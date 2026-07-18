@@ -1,0 +1,472 @@
+<template>
+  <div class="container" onswipe="blockSwipe">
+    <text class="time">{{time}}</text>
+    <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
+
+    <text class="title">解锁码计算</text>
+
+    <div class="field-row">
+      <div if="{{activeField=='mac'}}" class="field-chip field-chip-active" onclick="selectField('mac')">
+        <text class="field-label">MAC</text>
+        <text class="field-value">{{macDisplay == '' ? '未输入' : macDisplay}}</text>
+      </div>
+      <div if="{{activeField!='mac'}}" class="field-chip" onclick="selectField('mac')">
+        <text class="field-label">MAC</text>
+        <text class="field-value">{{macDisplay == '' ? '未输入' : macDisplay}}</text>
+      </div>
+    </div>
+    <div class="field-row">
+      <div if="{{activeField=='sn'}}" class="field-chip field-chip-active" onclick="selectField('sn')">
+        <text class="field-label">SN</text>
+        <text class="field-value">{{sn == '' ? '未输入' : sn}}</text>
+      </div>
+      <div if="{{activeField!='sn'}}" class="field-chip" onclick="selectField('sn')">
+        <text class="field-label">SN</text>
+        <text class="field-value">{{sn == '' ? '未输入' : sn}}</text>
+      </div>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-text-col">
+        <text class="toggle-label">新版算法</text>
+        <text class="toggle-hint">适用于 S5 / 10P 及以后</text>
+      </div>
+      <image if="{{useNewAlgo}}" class="toggle-img" src="/common/icon/on.png" onclick="toggleAlgo()"></image>
+      <image if="{{!useNewAlgo}}" class="toggle-img" src="/common/icon/off.png" onclick="toggleAlgo()"></image>
+    </div>
+
+    <div class="mode-row">
+      <div if="{{kbMode=='alnum'}}" class="mode-chip mode-chip-active" onclick="setMode('alnum')">
+        <text class="mode-text">字母数字</text>
+      </div>
+      <div if="{{kbMode!='alnum'}}" class="mode-chip" onclick="setMode('alnum')">
+        <text class="mode-text">字母数字</text>
+      </div>
+      <div if="{{kbMode=='symbol'}}" class="mode-chip mode-chip-active" onclick="setMode('symbol')">
+        <text class="mode-text">符号</text>
+      </div>
+      <div if="{{kbMode!='symbol'}}" class="mode-chip" onclick="setMode('symbol')">
+        <text class="mode-text">符号</text>
+      </div>
+    </div>
+
+    <div if="{{kbMode=='alnum'}}" class="keypad">
+      <div class="krow">
+        <div class="kbtn" onclick="pressChar('0')"><text class="kbtn-text">0</text></div>
+        <div class="kbtn" onclick="pressChar('1')"><text class="kbtn-text">1</text></div>
+        <div class="kbtn" onclick="pressChar('2')"><text class="kbtn-text">2</text></div>
+        <div class="kbtn" onclick="pressChar('3')"><text class="kbtn-text">3</text></div>
+        <div class="kbtn" onclick="pressChar('4')"><text class="kbtn-text">4</text></div>
+        <div class="kbtn" onclick="pressChar('5')"><text class="kbtn-text">5</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressChar('6')"><text class="kbtn-text">6</text></div>
+        <div class="kbtn" onclick="pressChar('7')"><text class="kbtn-text">7</text></div>
+        <div class="kbtn" onclick="pressChar('8')"><text class="kbtn-text">8</text></div>
+        <div class="kbtn" onclick="pressChar('9')"><text class="kbtn-text">9</text></div>
+        <div class="kbtn" onclick="pressChar('A')"><text class="kbtn-text">A</text></div>
+        <div class="kbtn" onclick="pressChar('B')"><text class="kbtn-text">B</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressChar('C')"><text class="kbtn-text">C</text></div>
+        <div class="kbtn" onclick="pressChar('D')"><text class="kbtn-text">D</text></div>
+        <div class="kbtn" onclick="pressChar('E')"><text class="kbtn-text">E</text></div>
+        <div class="kbtn" onclick="pressChar('F')"><text class="kbtn-text">F</text></div>
+        <div class="kbtn" onclick="pressChar('G')"><text class="kbtn-text">G</text></div>
+        <div class="kbtn" onclick="pressChar('H')"><text class="kbtn-text">H</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressChar('I')"><text class="kbtn-text">I</text></div>
+        <div class="kbtn" onclick="pressChar('J')"><text class="kbtn-text">J</text></div>
+        <div class="kbtn" onclick="pressChar('K')"><text class="kbtn-text">K</text></div>
+        <div class="kbtn" onclick="pressChar('L')"><text class="kbtn-text">L</text></div>
+        <div class="kbtn" onclick="pressChar('M')"><text class="kbtn-text">M</text></div>
+        <div class="kbtn" onclick="pressChar('N')"><text class="kbtn-text">N</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressChar('O')"><text class="kbtn-text">O</text></div>
+        <div class="kbtn" onclick="pressChar('P')"><text class="kbtn-text">P</text></div>
+        <div class="kbtn" onclick="pressChar('Q')"><text class="kbtn-text">Q</text></div>
+        <div class="kbtn" onclick="pressChar('R')"><text class="kbtn-text">R</text></div>
+        <div class="kbtn" onclick="pressChar('S')"><text class="kbtn-text">S</text></div>
+        <div class="kbtn" onclick="pressChar('T')"><text class="kbtn-text">T</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressChar('U')"><text class="kbtn-text">U</text></div>
+        <div class="kbtn" onclick="pressChar('V')"><text class="kbtn-text">V</text></div>
+        <div class="kbtn" onclick="pressChar('W')"><text class="kbtn-text">W</text></div>
+        <div class="kbtn" onclick="pressChar('X')"><text class="kbtn-text">X</text></div>
+        <div class="kbtn" onclick="pressChar('Y')"><text class="kbtn-text">Y</text></div>
+        <div class="kbtn" onclick="pressChar('Z')"><text class="kbtn-text">Z</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn kbtn-func" onclick="clearField()"><text class="kbtn-text-small">清空</text></div>
+        <div class="kbtn-wide kbtn-func" onclick="backspace()"><image class="kbtn-icon" src="/common/icon/del.png"></image></div>
+      </div>
+    </div>
+
+    <div if="{{kbMode=='symbol'}}" class="keypad">
+      <div class="krow">
+        <div class="kbtn" onclick="pressChar('-')"><text class="kbtn-text">-</text></div>
+        <div class="kbtn" onclick="pressChar('_')"><text class="kbtn-text">_</text></div>
+        <div class="kbtn" onclick="pressChar('.')"><text class="kbtn-text">.</text></div>
+        <div class="kbtn" onclick="pressChar(':')"><text class="kbtn-text">:</text></div>
+        <div class="kbtn" onclick="pressChar('/')"><text class="kbtn-text">/</text></div>
+        <div class="kbtn" onclick="pressChar('\\\\')"><text class="kbtn-text">\</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressChar('@')"><text class="kbtn-text">@</text></div>
+        <div class="kbtn" onclick="pressChar('#')"><text class="kbtn-text">#</text></div>
+        <div class="kbtn" onclick="pressChar('$')"><text class="kbtn-text">$</text></div>
+        <div class="kbtn" onclick="pressChar('%')"><text class="kbtn-text">%</text></div>
+        <div class="kbtn" onclick="pressChar('&amp;')"><text class="kbtn-text">&amp;</text></div>
+        <div class="kbtn" onclick="pressChar('*')"><text class="kbtn-text">*</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressChar('+')"><text class="kbtn-text">+</text></div>
+        <div class="kbtn" onclick="pressChar('=')"><text class="kbtn-text">=</text></div>
+        <div class="kbtn" onclick="pressChar('!')"><text class="kbtn-text">!</text></div>
+        <div class="kbtn" onclick="pressChar('?')"><text class="kbtn-text">?</text></div>
+        <div class="kbtn" onclick="pressChar('(')"><text class="kbtn-text">(</text></div>
+        <div class="kbtn" onclick="pressChar(')')"><text class="kbtn-text">)</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn" onclick="pressChar('[')"><text class="kbtn-text">[</text></div>
+        <div class="kbtn" onclick="pressChar(']')"><text class="kbtn-text">]</text></div>
+        <div class="kbtn" onclick="pressChar('{')"><text class="kbtn-text">{</text></div>
+        <div class="kbtn" onclick="pressChar('}')"><text class="kbtn-text">}</text></div>
+        <div class="kbtn" onclick="pressChar('~')"><text class="kbtn-text">~</text></div>
+        <div class="kbtn" onclick="pressChar('^')"><text class="kbtn-text">^</text></div>
+      </div>
+      <div class="krow">
+        <div class="kbtn kbtn-func" onclick="clearField()"><text class="kbtn-text-small">清空</text></div>
+        <div class="kbtn-wide kbtn-func" onclick="backspace()"><image class="kbtn-icon" src="/common/icon/del.png"></image></div>
+      </div>
+    </div>
+
+    <div class="calc-btn" onclick="calc()">
+      <text class="calc-btn-text">计算解锁码</text>
+    </div>
+
+    <text if="{{code != ''}}" class="result-text">{{code}}</text>
+  </div>
+</template>
+
+<style>
+.container {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  background-color: #000000;
+  position: relative;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.time {
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.back-btn {
+  width: 60px;
+  height: 42px;
+  margin-bottom: 2px;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+}
+
+.field-row {
+  width: 168px;
+  margin-bottom: 4px;
+}
+
+.field-chip {
+  width: 100%;
+  height: 28px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #262626;
+  border-radius: 14px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.field-chip-active {
+  background-color: #007AFF;
+}
+
+.field-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.field-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.mode-row {
+  width: 168px;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  margin-top: 2px;
+}
+
+.mode-chip {
+  flex: 1;
+  height: 24px;
+  margin-right: 6px;
+  border-radius: 12px;
+  background-color: #262626;
+  justify-content: center;
+  align-items: center;
+}
+
+.mode-chip-active {
+  background-color: #007AFF;
+}
+
+.mode-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.toggle-row {
+  width: 168px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  margin-top: 2px;
+}
+
+.toggle-text-col {
+  flex-direction: column;
+}
+
+.toggle-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.toggle-hint {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.toggle-img {
+  width: 38px;
+  height: 27px;
+}
+
+.keypad {
+  width: 168px;
+  flex-direction: column;
+  margin-top: 2px;
+}
+
+.krow {
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+
+.kbtn {
+  flex: 1;
+  height: 22px;
+  margin-right: 3px;
+  border-radius: 11px;
+  background-color: #262626;
+  justify-content: center;
+  align-items: center;
+}
+
+.kbtn-wide {
+  flex: 5;
+  height: 22px;
+  margin-right: 3px;
+  border-radius: 11px;
+  background-color: #262626;
+  justify-content: center;
+  align-items: center;
+}
+
+.kbtn-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.kbtn-text-small {
+  font-size: 10px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.kbtn-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.kbtn-func {
+  background-color: #FF9500;
+}
+
+.calc-btn {
+  width: 168px;
+  height: 32px;
+  border-radius: 16px;
+  background-color: #007AFF;
+  justify-content: center;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.calc-btn-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.result-text {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #34C759;
+  margin-top: 6px;
+}
+</style>
+
+<script>
+import router from '@system.router'
+import { vibrateShort } from '../../common/js/vibrate'
+import { calcUnlockCode } from '../../common/js/unlock'
+
+export default {
+  data: {
+    time: '',
+    activeField: 'mac',
+    kbMode: 'alnum',
+    mac: '',
+    sn: '',
+    macDisplay: '',
+    useNewAlgo: false,
+    code: ''
+  },
+
+  updateTime() {
+    var date = new Date()
+    var hour = String(date.getHours()).padStart(2, '0')
+    var minute = String(date.getMinutes()).padStart(2, '0')
+    this.time = hour + ':' + minute
+  },
+
+  onInit() {
+    this.updateTime()
+    this.timer = setInterval(() => {
+      this.updateTime()
+    }, 60000)
+  },
+
+  onShow() {
+    this.updateTime()
+  },
+
+  onDestroy() {
+    clearInterval(this.timer)
+  },
+
+  blockSwipe() {
+    // 攔截滑動手勢
+  },
+
+  goBack() {
+    vibrateShort()
+    router.back()
+  },
+
+  selectField(field) {
+    vibrateShort()
+    this.activeField = field
+  },
+
+  setMode(mode) {
+    vibrateShort()
+    this.kbMode = mode
+  },
+
+  updateMacDisplay() {
+    this.macDisplay = this.mac.replace(/(.{2})/g, '$1:').replace(/:$/, '')
+  },
+
+  pressChar(ch) {
+    vibrateShort()
+    if (this.activeField === 'mac') {
+      if (this.mac.length >= 12) return
+      this.mac = this.mac + ch
+      this.updateMacDisplay()
+    } else {
+      if (this.sn.length >= 20) return
+      this.sn = this.sn + ch
+    }
+    this.code = ''
+  },
+
+  backspace() {
+    vibrateShort()
+    if (this.activeField === 'mac') {
+      this.mac = this.mac.slice(0, -1)
+      this.updateMacDisplay()
+    } else {
+      this.sn = this.sn.slice(0, -1)
+    }
+    this.code = ''
+  },
+
+  clearField() {
+    vibrateShort()
+    if (this.activeField === 'mac') {
+      this.mac = ''
+      this.macDisplay = ''
+    } else {
+      this.sn = ''
+    }
+    this.code = ''
+  },
+
+  toggleAlgo() {
+    vibrateShort()
+    this.useNewAlgo = !this.useNewAlgo
+    this.code = ''
+  },
+
+  calc() {
+    vibrateShort()
+    if (!this.mac) {
+      this.code = ''
+      return
+    }
+    if (!this.sn) {
+      this.code = ''
+      return
+    }
+    this.code = calcUnlockCode(this.mac, this.sn, this.useNewAlgo)
+  }
+}
+</script>

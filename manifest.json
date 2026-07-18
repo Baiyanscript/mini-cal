@@ -5,13 +5,25 @@
   "versionCode": 1,
   "minPlatformVersion": 1000,
   "icon": "/common/icon.png",
-  "deviceTypeList": ["watch"],
+  "deviceTypeList": [
+    "watch"
+  ],
   "features": [
-    { "name": "system.prompt" },
-    { "name": "system.router" },
-    { "name": "system.app" },
-    { "name": "system.storage" },
-    { "name": "system.vibrator" }
+    {
+      "name": "system.prompt"
+    },
+    {
+      "name": "system.router"
+    },
+    {
+      "name": "system.app"
+    },
+    {
+      "name": "system.storage"
+    },
+    {
+      "name": "system.vibrator"
+    }
   ],
   "config": {
     "logLevel": "log",
@@ -36,6 +48,9 @@
         "component": "index"
       },
       "pages/settings": {
+        "component": "index"
+      },
+      "pages/unlock": {
         "component": "index"
       }
     }

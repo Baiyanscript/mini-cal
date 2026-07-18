@@ -35,5 +35,6 @@
   "exactModeHint": "オンにすると、計算結果を分数や平方根の形でできるだけ表示し、自動的に約分します",
   "vibrationLabel": "バイブレーション",
   "vibrationHint": "オフにすると、タップや戻る操作で振動しなくなります",
-  "errNotLinear": "一次方程式ではありません（aは0にできません）"
+  "errNotLinear": "一次方程式ではありません（aは0にできません）",
+  "menuUnlock": "ロック解除コード"
 }

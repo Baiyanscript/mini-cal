@@ -15,6 +15,9 @@
       <div class="menu-item" onclick="go('/pages/converter')">
         <text class="menu-text">{{$t("menuConverter")}}</text>
       </div>
+      <div class="menu-item" onclick="go('/pages/unlock')">
+        <text class="menu-text">{{$t("menuUnlock")}}</text>
+      </div>
     </div>
 
     <image class="info-btn" src="/common/icon/info.png" onclick="openAbout()"></image>

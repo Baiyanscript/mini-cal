@@ -35,5 +35,6 @@
   "exactModeHint": "開啟後，計算結果將嘗試以分數、根號等形式呈現，並自動約分",
   "vibrationLabel": "震動反饋",
   "vibrationHint": "關閉後，按鈕點擊、返回等操作將不再震動",
-  "errNotLinear": "不是一元一次方程（a不可為0）"
+  "errNotLinear": "不是一元一次方程（a不可為0）",
+  "menuUnlock": "解鎖碼計算"
 }

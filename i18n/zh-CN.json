@@ -35,5 +35,6 @@
   "exactModeHint": "开启后，计算结果将尝试以分数、根号等形式呈现，并自动约分",
   "vibrationLabel": "震动反馈",
   "vibrationHint": "关闭后，按钮点击、返回等操作将不再震动",
-  "errNotLinear": "不是一元一次方程（a不可为0）"
+  "errNotLinear": "不是一元一次方程（a不可为0）",
+  "menuUnlock": "解锁码计算"
 }
