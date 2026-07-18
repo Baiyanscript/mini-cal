@@ -2,20 +2,20 @@
   <div class="container" onswipe="blockSwipe">
     <text class="time">{{time}}</text>
     <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
-    <text class="title">{{$t("eqTitle")}}</text>
+    <text class="title">{{labels.eqTitle}}</text>
 
     <div class="type-row">
       <div if="{{isLinear}}" class="type-btn type-btn-active" onclick="setType('linear')">
-        <text class="type-text">{{$t("typeLinear")}}</text>
+        <text class="type-text">{{labels.typeLinear}}</text>
       </div>
       <div if="{{!isLinear}}" class="type-btn" onclick="setType('linear')">
-        <text class="type-text">{{$t("typeLinear")}}</text>
+        <text class="type-text">{{labels.typeLinear}}</text>
       </div>
       <div if="{{!isLinear}}" class="type-btn type-btn-active" onclick="setType('quadratic')">
-        <text class="type-text">{{$t("typeQuadratic")}}</text>
+        <text class="type-text">{{labels.typeQuadratic}}</text>
       </div>
       <div if="{{isLinear}}" class="type-btn" onclick="setType('quadratic')">
-        <text class="type-text">{{$t("typeQuadratic")}}</text>
+        <text class="type-text">{{labels.typeQuadratic}}</text>
       </div>
     </div>
 
@@ -73,7 +73,7 @@
       </div>
     </div>
 
-    <div class="solve-btn" onclick="solve()"><text class="solve-btn-text">{{$t("solveBtn")}}</text></div>
+    <div class="solve-btn" onclick="solve()"><text class="solve-btn-text">{{labels.solveBtn}}</text></div>
 
     <text class="result">{{solution}}</text>
   </div>
@@ -128,6 +128,9 @@
   align-items: center;
   background-color: #262626;
   border-radius: 15px;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .type-btn-active {
@@ -163,6 +166,9 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .chip-active {
@@ -202,6 +208,9 @@
   background-color: #262626;
   justify-content: center;
   align-items: center;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .kbtn-spacer {
@@ -261,6 +270,7 @@
 <script>
 import { solveLinear, solveQuadratic } from '../../common/js/math-utils'
 import { vibrateShort } from '../../common/js/vibrate'
+import { getLabels, loadLanguage } from '../../common/js/i18n'
 import router from '@system.router'
 
 export default {
@@ -271,7 +281,8 @@ export default {
     a: '0',
     b: '0',
     c: '0',
-    solution: ''
+    solution: '',
+    labels: getLabels('zh-CN')
   },
 
   updateTime() {
@@ -286,10 +297,16 @@ export default {
     this.timer = setInterval(() => {
       this.updateTime()
     }, 60000)
+    loadLanguage((labels) => {
+      this.labels = labels
+    })
   },
 
   onShow() {
     this.updateTime()
+    loadLanguage((labels) => {
+      this.labels = labels
+    })
   },
 
   blockSwipe() {
@@ -376,7 +393,7 @@ export default {
         var c = parseFloat(this.c || '0')
         var roots = solveQuadratic(a, b, c)
         if (!roots) {
-          this.solution = this.$t('noRealSolution')
+          this.solution = this.labels.noRealSolution
         } else if (roots.length === 1) {
           this.solution = 'x = ' + roots[0]
         } else {
@@ -384,8 +401,8 @@ export default {
         }
       }
     } catch (error) {
-      var message = error.message === 'ERR_NOT_LINEAR' ? this.$t('errNotLinear') : error.message
-      this.solution = this.$t('solveErrorPrefix') + message
+      var message = error.message === 'ERR_NOT_LINEAR' ? this.labels.errNotLinear : error.message
+      this.solution = this.labels.solveErrorPrefix + message
     }
   }
 }

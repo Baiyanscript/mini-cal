@@ -108,6 +108,9 @@
   justify-content: center;
   align-items: center;
   margin-bottom: 8px;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .type-pill-text {
@@ -133,6 +136,9 @@
   padding-left: 14px;
   padding-right: 8px;
   margin-right: 6px;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .value-box-output {
@@ -199,6 +205,9 @@
   background-color: #262626;
   justify-content: center;
   align-items: center;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .kbtn-spacer {
@@ -272,6 +281,9 @@
   border-radius: 23px;
   margin-bottom: 8px;
   position: relative;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .list-item-name {
@@ -298,6 +310,7 @@
 <script>
 import router from '@system.router'
 import { vibrateShort } from '../../common/js/vibrate'
+import { getLabels, loadLanguage } from '../../common/js/i18n'
 import storage from '@system.storage'
 import { TYPES } from '../../common/js/units'
 
@@ -314,7 +327,8 @@ export default {
     output: '',
     showList: false,
     listTitle: '',
-    listItems: []
+    listItems: [],
+    labels: getLabels('zh-CN')
   },
 
   updateTime() {
@@ -351,10 +365,19 @@ export default {
         self.syncDisplay()
       }
     })
+
+    loadLanguage((labels) => {
+      this.labels = labels
+      this.syncDisplay()
+    })
   },
 
   onShow() {
     this.updateTime()
+    loadLanguage((labels) => {
+      this.labels = labels
+      this.syncDisplay()
+    })
   },
 
   onDestroy() {
@@ -387,7 +410,7 @@ export default {
 
   syncDisplay() {
     var type = TYPES[this.typeIndex]
-    this.typeName = this.$t(CATEGORY_KEYS[this.typeIndex])
+    this.typeName = this.labels[CATEGORY_KEYS[this.typeIndex]]
     this.showNegative = type.negative
     this.unit1Short = type.list[this.unit1Index].shortname
     this.unit2Short = type.list[this.unit2Index].shortname
@@ -460,10 +483,10 @@ export default {
   openTypeList() {
     vibrateShort()
     this.listMode = 'type'
-    this.listTitle = this.$t('convSelectType')
+    this.listTitle = this.labels.convSelectType
     var items = []
     for (var i = 0; i < TYPES.length; i++) {
-      items.push({ name: this.$t(CATEGORY_KEYS[i]), shortname: '', selected: i === this.typeIndex })
+      items.push({ name: this.labels[CATEGORY_KEYS[i]], shortname: '', selected: i === this.typeIndex })
     }
     this.listItems = items
     this.showList = true
@@ -472,14 +495,14 @@ export default {
   openUnit1List() {
     vibrateShort()
     this.listMode = 'unit1'
-    this.listTitle = this.$t(CATEGORY_KEYS[this.typeIndex]) + ' - ' + this.$t('convUnit1')
+    this.listTitle = this.labels[CATEGORY_KEYS[this.typeIndex]] + ' - ' + this.labels.convUnit1
     this.buildUnitList(this.unit1Index)
   },
 
   openUnit2List() {
     vibrateShort()
     this.listMode = 'unit2'
-    this.listTitle = this.$t(CATEGORY_KEYS[this.typeIndex]) + ' - ' + this.$t('convUnit2')
+    this.listTitle = this.labels[CATEGORY_KEYS[this.typeIndex]] + ' - ' + this.labels.convUnit2
     this.buildUnitList(this.unit2Index)
   },
 

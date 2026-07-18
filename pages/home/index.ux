@@ -1,22 +1,22 @@
 <template>
   <div class="container" onswipe="blockSwipe">
     <div class="menu-wrap">
-      <text class="title">{{$t("homeTitle")}}</text>
+      <text class="title">{{labels.homeTitle}}</text>
 
       <div class="menu-item" onclick="go('/pages/calculator')">
-        <text class="menu-text">{{$t("menuCalculator")}}</text>
+        <text class="menu-text">{{labels.menuCalculator}}</text>
       </div>
       <div class="menu-item" onclick="go('/pages/equation')">
-        <text class="menu-text">{{$t("menuEquation")}}</text>
+        <text class="menu-text">{{labels.menuEquation}}</text>
       </div>
       <div class="menu-item" onclick="go('/pages/inequality')">
-        <text class="menu-text">{{$t("menuInequality")}}</text>
+        <text class="menu-text">{{labels.menuInequality}}</text>
       </div>
       <div class="menu-item" onclick="go('/pages/converter')">
-        <text class="menu-text">{{$t("menuConverter")}}</text>
+        <text class="menu-text">{{labels.menuConverter}}</text>
       </div>
       <div class="menu-item" onclick="go('/pages/unlock')">
-        <text class="menu-text">{{$t("menuUnlock")}}</text>
+        <text class="menu-text">{{labels.menuUnlock}}</text>
       </div>
     </div>
 
@@ -93,6 +93,9 @@
   background-color: #262626;
   border-radius: 29px;
   margin-bottom: 10px;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .menu-text {
@@ -130,11 +133,13 @@
 <script>
 import router from '@system.router'
 import { vibrateShort } from '../../common/js/vibrate'
+import { getLabels, loadLanguage } from '../../common/js/i18n'
 
 export default {
   data: {
     time: '',
-    ab: false
+    ab: false,
+    labels: getLabels('zh-CN')
   },
 
   updateTime() {
@@ -149,10 +154,16 @@ export default {
     this.timer = setInterval(() => {
       this.updateTime()
     }, 60000)
+    loadLanguage((labels) => {
+      this.labels = labels
+    })
   },
 
   onShow() {
     this.updateTime()
+    loadLanguage((labels) => {
+      this.labels = labels
+    })
   },
 
   blockSwipe() {

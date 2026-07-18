@@ -2,20 +2,20 @@
   <div class="container" onswipe="blockSwipe">
     <text class="time">{{time}}</text>
     <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
-    <text class="title">{{$t("ineqTitle")}}</text>
+    <text class="title">{{labels.ineqTitle}}</text>
 
     <div class="type-row">
       <div if="{{isLinear}}" class="type-btn type-btn-active" onclick="setType('linear')">
-        <text class="type-text">{{$t("typeLinear")}}</text>
+        <text class="type-text">{{labels.typeLinear}}</text>
       </div>
       <div if="{{!isLinear}}" class="type-btn" onclick="setType('linear')">
-        <text class="type-text">{{$t("typeLinear")}}</text>
+        <text class="type-text">{{labels.typeLinear}}</text>
       </div>
       <div if="{{!isLinear}}" class="type-btn type-btn-active" onclick="setType('quadratic')">
-        <text class="type-text">{{$t("typeQuadratic")}}</text>
+        <text class="type-text">{{labels.typeQuadratic}}</text>
       </div>
       <div if="{{isLinear}}" class="type-btn" onclick="setType('quadratic')">
-        <text class="type-text">{{$t("typeQuadratic")}}</text>
+        <text class="type-text">{{labels.typeQuadratic}}</text>
       </div>
     </div>
 
@@ -84,7 +84,7 @@
       </div>
     </div>
 
-    <div class="solve-btn" onclick="solve()"><text class="solve-btn-text">{{$t("solveBtn")}}</text></div>
+    <div class="solve-btn" onclick="solve()"><text class="solve-btn-text">{{labels.solveBtn}}</text></div>
 
     <text class="result">{{solution}}</text>
   </div>
@@ -139,6 +139,9 @@
   align-items: center;
   background-color: #262626;
   border-radius: 14px;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .type-btn-active {
@@ -164,6 +167,9 @@
   align-items: center;
   background-color: #262626;
   border-radius: 13px;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .op-btn-active {
@@ -192,6 +198,9 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .chip-active {
@@ -231,6 +240,9 @@
   background-color: #262626;
   justify-content: center;
   align-items: center;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .kbtn-spacer {
@@ -290,6 +302,7 @@
 <script>
 import { solveLinearInequality, solveQuadraticInequality } from '../../common/js/math-utils'
 import { vibrateShort } from '../../common/js/vibrate'
+import { getLabels, loadLanguage } from '../../common/js/i18n'
 import router from '@system.router'
 
 export default {
@@ -301,7 +314,8 @@ export default {
     a: '0',
     b: '0',
     c: '0',
-    solution: ''
+    solution: '',
+    labels: getLabels('zh-CN')
   },
 
   updateTime() {
@@ -316,10 +330,16 @@ export default {
     this.timer = setInterval(() => {
       this.updateTime()
     }, 60000)
+    loadLanguage((labels) => {
+      this.labels = labels
+    })
   },
 
   onShow() {
     this.updateTime()
+    loadLanguage((labels) => {
+      this.labels = labels
+    })
   },
 
   blockSwipe() {
@@ -413,15 +433,15 @@ export default {
       }
       this.solution = this.translateSolution(raw)
     } catch (error) {
-      var message = error.message === 'ERR_A_ZERO' ? this.$t('errACannotZero') : error.message
-      this.solution = this.$t('solveErrorPrefix') + message
+      var message = error.message === 'ERR_A_ZERO' ? this.labels.errACannotZero : error.message
+      this.solution = this.labels.solveErrorPrefix + message
     }
   },
 
   translateSolution(raw) {
-    if (raw === 'ALL_REAL') return this.$t('allReal')
-    if (raw === 'NO_SOLUTION') return this.$t('noSolution')
-    return raw.split('||OR||').join(this.$t('orWord'))
+    if (raw === 'ALL_REAL') return this.labels.allReal
+    if (raw === 'NO_SOLUTION') return this.labels.noSolution
+    return raw.split('||OR||').join(this.labels.orWord)
   }
 }
 </script>

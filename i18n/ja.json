@@ -36,5 +36,6 @@
   "vibrationLabel": "バイブレーション",
   "vibrationHint": "オフにすると、タップや戻る操作で振動しなくなります",
   "errNotLinear": "一次方程式ではありません（aは0にできません）",
-  "menuUnlock": "ロック解除コード"
+  "menuUnlock": "ロック解除コード",
+  "languageLabel": "言語"
 }

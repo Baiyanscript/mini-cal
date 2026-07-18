@@ -36,5 +36,6 @@
   "vibrationLabel": "Vibration",
   "vibrationHint": "When disabled, taps and navigation will no longer vibrate",
   "errNotLinear": "Not a linear equation (a cannot be 0)",
-  "menuUnlock": "Unlock Code"
+  "menuUnlock": "Unlock Code",
+  "languageLabel": "Language"
 }

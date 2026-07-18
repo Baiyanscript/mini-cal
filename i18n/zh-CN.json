@@ -36,5 +36,6 @@
   "vibrationLabel": "震动反馈",
   "vibrationHint": "关闭后，按钮点击、返回等操作将不再震动",
   "errNotLinear": "不是一元一次方程（a不可为0）",
-  "menuUnlock": "解锁码计算"
+  "menuUnlock": "解锁码计算",
+  "languageLabel": "语言"
 }

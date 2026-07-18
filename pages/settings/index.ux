@@ -3,21 +3,37 @@
     <text class="time">{{time}}</text>
     <image class="back-btn" src="/common/icon/back.png" onclick="goBack()"></image>
 
-    <text class="title">{{$t("settingsTitle")}}</text>
+    <text class="title">{{labels.settingsTitle}}</text>
 
     <div class="switch-row">
-      <text class="switch-label">{{$t("exactModeLabel")}}</text>
+      <text class="switch-label">{{labels.exactModeLabel}}</text>
       <image if="{{exactMode}}" class="switch-img" src="/common/icon/on.png" onclick="toggleExactMode()"></image>
       <image if="{{!exactMode}}" class="switch-img" src="/common/icon/off.png" onclick="toggleExactMode()"></image>
     </div>
-    <text class="hint">{{$t("exactModeHint")}}</text>
+    <text class="hint">{{labels.exactModeHint}}</text>
 
     <div class="switch-row">
-      <text class="switch-label">{{$t("vibrationLabel")}}</text>
+      <text class="switch-label">{{labels.vibrationLabel}}</text>
       <image if="{{vibrationEnabled}}" class="switch-img" src="/common/icon/on.png" onclick="toggleVibration()"></image>
       <image if="{{!vibrationEnabled}}" class="switch-img" src="/common/icon/off.png" onclick="toggleVibration()"></image>
     </div>
-    <text class="hint">{{$t("vibrationHint")}}</text>
+    <text class="hint">{{labels.vibrationHint}}</text>
+
+    <text class="section-label">{{labels.languageLabel}}</text>
+    <div class="lang-grid">
+      <div if="{{currentLangCode=='zh-CN'}}" class="lang-chip lang-chip-active" onclick="selectLanguage('zh-CN')"><text class="lang-text">简体中文</text></div>
+      <div if="{{currentLangCode!='zh-CN'}}" class="lang-chip" onclick="selectLanguage('zh-CN')"><text class="lang-text">简体中文</text></div>
+
+      <div if="{{currentLangCode=='zh-TW'}}" class="lang-chip lang-chip-active" onclick="selectLanguage('zh-TW')"><text class="lang-text">繁體中文</text></div>
+      <div if="{{currentLangCode!='zh-TW'}}" class="lang-chip" onclick="selectLanguage('zh-TW')"><text class="lang-text">繁體中文</text></div>
+    </div>
+    <div class="lang-grid">
+      <div if="{{currentLangCode=='en'}}" class="lang-chip lang-chip-active" onclick="selectLanguage('en')"><text class="lang-text">English</text></div>
+      <div if="{{currentLangCode!='en'}}" class="lang-chip" onclick="selectLanguage('en')"><text class="lang-text">English</text></div>
+
+      <div if="{{currentLangCode=='ja'}}" class="lang-chip lang-chip-active" onclick="selectLanguage('ja')"><text class="lang-text">日本語</text></div>
+      <div if="{{currentLangCode!='ja'}}" class="lang-chip" onclick="selectLanguage('ja')"><text class="lang-text">日本語</text></div>
+    </div>
   </div>
 </template>
 
@@ -66,6 +82,9 @@
   padding-bottom: 10px;
   padding-left: 14px;
   margin-bottom: 12px;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .switch-label {
@@ -85,18 +104,60 @@
   color: rgba(255, 255, 255, 0.5);
   text-align: left;
 }
+
+.section-label {
+  width: 170px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+
+.lang-grid {
+  width: 170px;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.lang-chip {
+  flex: 1;
+  height: 32px;
+  margin-right: 8px;
+  border-radius: 16px;
+  background-color: #262626;
+  justify-content: center;
+  align-items: center;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.lang-chip-active {
+  background-color: #007AFF;
+}
+
+.lang-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
 </style>
 
 <script>
 import router from '@system.router'
 import storage from '@system.storage'
 import vibrator from '@system.vibrator'
+import { getLabels, saveLanguage } from '../../common/js/i18n'
 
 export default {
   data: {
     time: '',
     exactMode: false,
-    vibrationEnabled: true
+    vibrationEnabled: true,
+    labels: getLabels('zh-CN'),
+    currentLangCode: 'zh-CN'
   },
 
   updateTime() {
@@ -129,6 +190,16 @@ export default {
       },
       fail: function () {
         self.vibrationEnabled = true
+      }
+    })
+    storage.get({
+      key: 'appLanguage',
+      success: function (data) {
+        self.currentLangCode = data || 'zh-CN'
+        self.labels = getLabels(self.currentLangCode)
+      },
+      fail: function () {
+        self.currentLangCode = 'zh-CN'
       }
     })
   },
@@ -172,6 +243,13 @@ export default {
       value: String(this.vibrationEnabled)
     })
     this.doVibrate()
+  },
+
+  selectLanguage(code) {
+    this.doVibrate()
+    this.currentLangCode = code
+    this.labels = getLabels(code)
+    saveLanguage(code)
   }
 }
 </script>

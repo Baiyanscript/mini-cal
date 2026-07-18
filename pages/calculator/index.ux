@@ -120,6 +120,9 @@
   background-color: #262626;
   justify-content: center;
   align-items: center;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .btn-text {
@@ -147,6 +150,7 @@
 <script>
 import { evaluate, toExactForm } from '../../common/js/math-utils'
 import { vibrateShort } from '../../common/js/vibrate'
+import { getLabels, loadLanguage } from '../../common/js/i18n'
 import router from '@system.router'
 import storage from '@system.storage'
 
@@ -154,7 +158,8 @@ export default {
   data: {
     time: '',
     expression: '',
-    result: '0'
+    result: '0',
+    labels: getLabels('zh-CN')
   },
 
   updateTime() {
@@ -184,11 +189,17 @@ export default {
     }, 60000)
     this.exactMode = false
     this.loadExactMode()
+    loadLanguage((labels) => {
+      this.labels = labels
+    })
   },
 
   onShow() {
     this.updateTime()
     this.loadExactMode()
+    loadLanguage((labels) => {
+      this.labels = labels
+    })
   },
 
   blockSwipe() {
@@ -233,7 +244,7 @@ export default {
         this.result = String(rounded)
       }
     } catch (error) {
-      this.result = this.$t('calcError')
+      this.result = this.labels.calcError
     }
   }
 }
